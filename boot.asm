@@ -1,6 +1,3 @@
-; boot.asm - Multiboot header with graphics request + entry point
-; nasm -f elf32 boot.asm -o boot.o
-
 MBOOT_PAGE_ALIGN    equ 1 << 0
 MBOOT_MEM_INFO      equ 1 << 1
 MBOOT_VIDEO_MODE    equ 1 << 2
@@ -13,10 +10,10 @@ align 4
     dd MBOOT_MAGIC
     dd MBOOT_FLAGS
     dd MBOOT_CHECKSUM
-    dd 0
-    dd 1024
-    dd 768
-    dd 32
+    dd 0        ; mode_type
+    dd 1024     ; width
+    dd 768      ; height
+    dd 32       ; depth
 
 section .bss
 align 16
@@ -29,10 +26,21 @@ global _start
 extern kernel_main
 
 _start:
+    ; 1. Set up stack safely
     mov esp, stack_top
+
+    ; 2. Clear the screen directly from Assembly
+    ; This proves we reached our code without crashing
+    mov edi, 0xB8000
+    mov ecx, 80 * 25
+    mov ax, 0x0F20      ; 0x0F = white on black, 0x20 = space
+    rep stosw
+
+    ; 3. Push Multiboot pointer and call C
     push ebx
-    cli
     call kernel_main
+
 .hang:
+    cli
     hlt
     jmp .hang

@@ -24,7 +24,7 @@ jobs:
         run: gcc -m32 -ffreestanding -fno-pie -nostdlib -c kernel.c -o kernel.o
 
       - name: Link kernel
-        run: ld -m elf_i386 -Ttext 0x100000 -o kernel.bin boot.o kernel.o --oformat elf32-i386
+        run: ld -m elf_i386 -Ttext 0x100000 -o kernel.bin boot.o kernel.o --oformat elf32-i386 -N
 
       - name: Build ISO tree
         run: |

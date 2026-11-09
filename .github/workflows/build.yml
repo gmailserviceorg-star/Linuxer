@@ -15,7 +15,7 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y nasm gcc-multilib xorriso grub-pc-bin grub-common
+          sudo apt-get install -y nasm gcc-multilib xorriso grub-pc-bin grub-common mtools
 
       - name: Assemble boot.asm
         run: nasm -f elf32 boot.asm -o boot.o
